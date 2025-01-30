@@ -1,36 +1,28 @@
 package com.point.of.sale.pos.model;
 
-import com.point.of.sale.pos.dto.Item;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class Transaction {
-    private List<Item> items;
+    @Id
+    @GeneratedValue
+    private Long id;
     private double totalAmount;
     private double cashTendered;
     private double change;
 
-    public Transaction(List<Item> items, double cashTendered) {
-        this.items = items;
-        this.cashTendered = cashTendered;
-        this.totalAmount = processTotalAmount();
-        this.change = processBalanceAfterTransaction();
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TransactionItem> items;
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
     }
 
-    public double processTotalAmount() {
-        return items.stream().mapToDouble(Item::getTotalPrice).sum();
-    }
-
-    public double processBalanceAfterTransaction() {
-        return cashTendered - totalAmount;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public double getTotalAmount() {
@@ -56,4 +48,13 @@ public class Transaction {
     public void setChange(double change) {
         this.change = change;
     }
+
+    public List<TransactionItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<TransactionItem> items) {
+        this.items = items;
+    }
 }
+
